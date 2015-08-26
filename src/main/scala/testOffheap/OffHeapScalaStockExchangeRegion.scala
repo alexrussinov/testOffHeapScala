@@ -1,25 +1,21 @@
 package testOffheap
 
-import scala.offheap._
+import scala.offheap.{malloc, EmbedArray, Region, Pool}
 
 /**
  * Created by Aleksey Voronets on 26.08.15.
  */
-@data class OffHeapTrade(ticket: Int, amount: Int, price: Int, buy: Boolean)
-{
-    def balance = amount * price * (if(buy) 1 else -1)
-}
-
-class OffHeapScalaStockExchange extends StockExchange {
-
-    implicit val alloc = malloc
+class OffHeapScalaStockExchangeRegion extends StockExchange {
+    implicit val props = Region.Props(Pool())
 
     private var pointer = 0
 
-    val orders = EmbedArray.uninit[OffHeapTrade](StockExchange.TRADES_PER_DAY)
+    var orders: EmbedArray[OffHeapTrade] =  Region{ implicit r =>
+        EmbedArray.uninit[OffHeapTrade](StockExchange.TRADES_PER_DAY)
+    }
 
     override def order(ticket: Int, amount: Int, price: Int, buy: Boolean): Unit = {
-        orders(pointer) = OffHeapTrade(ticket, amount, price, buy)
+        Region { implicit r => orders(pointer) = OffHeapTrade(ticket, amount, price, buy) }
         pointer += 1
     }
 
@@ -31,9 +27,7 @@ class OffHeapScalaStockExchange extends StockExchange {
             result += order.balance
             i += 1
         }
-        alloc.free(orders.addr)
+/*        alloc.free(orders.addr)*/
         result
     }
 }
-
-

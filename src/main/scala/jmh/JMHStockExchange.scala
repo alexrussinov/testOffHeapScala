@@ -6,14 +6,14 @@ import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.annotations.BenchmarkMode
 import org.openjdk.jmh.annotations.Mode
 import org.openjdk.jmh.annotations.OutputTimeUnit
-import testOffheap.{StockExchange, OffHeapScalaStockExchange}
+import testOffheap._
 
 /**
  * Created by Aleksey Voronets on 26.08.15.
  */
 class JMHStockExchange {
 
-/*    @Benchmark
+    @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     def arrayInt: Double = {
@@ -96,13 +96,26 @@ class JMHStockExchange {
         }
         exchange.dayBalance()
         exchange.destroy()
-    }*/
+    }
 
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     def offHeapScala: Double = {
         val exchange: StockExchange = new OffHeapScalaStockExchange
+        var i: Int = 0
+        while (i < StockExchange.TRADES_PER_DAY) {
+            exchange.order(i, i, i, (i & 1) == 0)
+            i += 1
+        }
+        exchange.dayBalance
+    }
+
+    @Benchmark
+    @BenchmarkMode(Array(Mode.AverageTime))
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    def offHeapRegionScala: Double = {
+        val exchange: StockExchange = new OffHeapScalaStockExchangeRegion
         var i: Int = 0
         while (i < StockExchange.TRADES_PER_DAY) {
             exchange.order(i, i, i, (i & 1) == 0)

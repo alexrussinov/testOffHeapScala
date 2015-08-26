@@ -42,8 +42,7 @@ class UnsafeStockExchange extends StockExchange {
     private var recordsCount = 0
 }
 
-
-private object UnsafeTrade {
+object UnsafeTrade {
     val unsafe = SunMisc.UNSAFE
 
     private var objectOffset = 0L
