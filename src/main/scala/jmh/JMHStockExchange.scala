@@ -16,6 +16,20 @@ class JMHStockExchange {
     @Benchmark
     @BenchmarkMode(Array(Mode.AverageTime))
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    def listTrade: Double = {
+        val exchange: StockExchange = new ListStockExchange()
+        var i: Int = 0
+        while (i < StockExchange.TRADES_PER_DAY) {
+            exchange.order(i, i, i, (i & 1) == 0)
+            i += 1
+        }
+        println("Day balance: " + exchange.dayBalance)
+        exchange.dayBalance
+    }
+
+    @Benchmark
+    @BenchmarkMode(Array(Mode.AverageTime))
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
     def arrayInt: Double = {
         val exchange: StockExchange = new ArrayIntStockExchange()
         var i: Int = 0
@@ -61,6 +75,20 @@ class JMHStockExchange {
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     def byteBufferDirectInt: Double = {
         val exchange: StockExchange = new ByteBufferStockExchange(true)
+        var i: Int = 0
+        while (i < StockExchange.TRADES_PER_DAY) {
+            exchange.order(i, i, i, (i & 1) == 0)
+            i += 1
+        }
+        println("Day balance: " + exchange.dayBalance)
+        exchange.dayBalance
+    }
+
+    @Benchmark
+    @BenchmarkMode(Array(Mode.AverageTime))
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    def byteBufferUnDirectInt: Double = {
+        val exchange: StockExchange = new ByteBufferStockExchange(false)
         var i: Int = 0
         while (i < StockExchange.TRADES_PER_DAY) {
             exchange.order(i, i, i, (i & 1) == 0)

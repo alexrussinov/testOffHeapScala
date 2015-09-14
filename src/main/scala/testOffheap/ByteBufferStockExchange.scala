@@ -11,7 +11,6 @@ class ByteBufferStockExchange(direct: Boolean) extends StockExchange {
     private val flyweight = BufferTrade
 
     private val buffer: ByteBuffer = {
-        println("flyweight size: " + flyweight.getObjectSize)
         if (direct) ByteBuffer.allocateDirect(StockExchange.TRADES_PER_DAY * flyweight.getObjectSize)
         else ByteBuffer.allocate(StockExchange.TRADES_PER_DAY * flyweight.getObjectSize)
     }

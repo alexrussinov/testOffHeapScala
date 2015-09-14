@@ -11,14 +11,6 @@ class ArrayListStockExchange extends StockExchange{
     override def order(ticket: Int, amount: Int, price: Int, buy: Boolean): Unit = orders.add(new Trade(ticket, amount, price, buy))
 
     override def dayBalance: Double = {
-        /*        @tailrec
-                def calculate(acc: Double, orders: util.ArrayList[Trade]): Double =
-                {
-                    if(orders.isEmpty) acc
-                    else calculate(acc + orders.head.amount * orders.head.price * (if(orders.head.buy)  1 else -1), orders.tail)
-                }
-                calculate(0.0, orders)*/
-
         var result = 0
         var i = 0
         while(i < orders.size){
